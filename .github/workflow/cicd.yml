@@ -2,7 +2,7 @@ name: Deploy Backend Application
 on:
   push:
     branches:
-      - dr.main
+      - dr-main-docker
 
 jobs:
   build:
@@ -10,9 +10,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Login to docker
+      - name: Login to docker hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build docker image
