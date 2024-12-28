@@ -1,5 +1,5 @@
-name: Deploy Backend Application
 
+name: Deploy Backend Application
 on:
   push:
     branches:
@@ -13,68 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Login to docker hub
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
 
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t atulthakur09/vdbackend
 
-      - name: Build Docker image
-        run: docker build -t atulthakur09/vdbackend:${{ github.sha }} .
+      - name: Publish docker image
+        run: docker push atulthakur09/vdbackend:latest
 
-      - name: Publish Docker image
-        run: docker push atulthakur09/vdbackend:${{ github.sha }}
-
-  deploy:
-    needs: build
-    runs-on: self-hosted
-
-    steps:
-      - name: Set up Docker
-        run: |
-          if ! command -v docker &> /dev/null; then
-            echo "Docker not found, installing..."
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-          fi
-
-      - name: Pull image from Docker Hub
-        run: docker pull atulthakur09/vdbackend:${{ github.sha }}
-
-      - name: Run Docker container
-        run: |
-          docker run -d -p 3777:3777 --name atulthakur09/drBackend-container \
-            -e MONGO_PASSWORD="${{ secrets.MONGO_PASSWORD }}" \
-            atulthakur09/vdbackend:${{ github.sha }}
-
-# name: Deploy Backend Application
-# on:
-#   push:
-#     branches:
-#       - dr-main-docker
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Login to docker hub
-#         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
-
-#       - name: Build docker image
-#         run: docker build -t atulthakur09/vdbackend
-
-#       - name: Publish docker image
-#         run: docker push atulthakur09/vdbackend:latest
-
-#       deploy:
-#         needs: build
-#         runs-on: self-hosted
-#         steps:
-#           - name: Pull image from docker hub
-#             run: docker pull atulthakur09/vdbackend:latest
-#           - name: Run docker container
-#             run: docker run -d -p 3777:3777 --name atulthakur09/drBackend-container -e MONGO_PASSWORD= `${{secrets.MONGO_PASSWORD}}` atulthakur09/vdbackend
+      deploy:
+        needs: build
+        runs-on: self-hosted
+        steps:
+          - name: Pull image from docker hub
+            run: docker pull atulthakur09/vdbackend:latest
+          - name: Run docker container
+            run: docker run -d -p 3777:3777 --name atulthakur09/drBackend-container -e MONGO_PASSWORD= `${{secrets.MONGO_PASSWORD}}` atulthakur09/vdbackend
