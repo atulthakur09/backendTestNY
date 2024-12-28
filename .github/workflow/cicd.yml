@@ -1,0 +1,31 @@
+name: Deploy Backend Application
+on:
+  push:
+    branches:
+      - dr.main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to docker
+        run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Build docker image
+        run: docker build -t atulthakur09/dr.main
+
+      - name: Publish docker image
+        run: docker push atulthakur09/dr.main
+
+      deploy:
+        needs: build
+        runs-on: self-hosted
+        steps:
+          - name: Pull image from docker hub
+            run: docker pull atulthakur09/dr.main:latest
+          - name: Run docker container
+            run: docker run -d -p 3777:3777 --name atulthakur09/dr.main-container -e MONGO_PASSWORD= '${{secrets.MONGO_PASSWORD}}' atulthakur09/dr.main
