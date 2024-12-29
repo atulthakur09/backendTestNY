@@ -137,165 +137,6 @@ serviceManagementCltr.vehicleServiceEstimation = async (req, res) => {
 }
 
 
-//         // Check if the mobile number and vehicle number are already registered
-//         const existingRecord = await Vehicle.findOne({ vehicleNumber: body.vehicleNumber, mobile: body.mobile });
-//         if (existingRecord) {
-//             if (existingRecord.userName === body.userName && existingRecord.mobile === body.mobile && existingRecord.vehicleNumber === body.vehicleNumber) {
-                
-//                 // Save new service record as it's a duplicate but allowed based on user details matching
-//                 const newServiceRecord = new vehicleService(body);
-//                 await newServiceRecord.save();
-//                 console.log("Duplicate vehicle number found. Saved as a new service record.");
-
-//                 // Update the vehicle's odometer reading
-//                 await Vehicle.findOneAndUpdate(
-//                     { vehicleNumber: body.vehicleNumber },
-//                     { odometer: body.odometer },
-//                     { new: true }
-//                 );
-//                 console.log("Vehicle odometer updated successfully.");
-                
-//                 return res.status(201).json(newServiceRecord);
-//             } else {
-//                 console.log("Mobile number registered with different details.");
-//                 return res.status(400).json({ error: 'Mobile Number is already registered with different user details' });
-//             }
-//         } else {
-//             // Save service record as a new entry
-//             const newServiceRecord = new vehicleService(body);
-//             await newServiceRecord.save();
-//             console.log("New service record saved successfully.");
-
-//             // Update the vehicle's odometer reading
-//             await VehicleRegister.findOneAndUpdate(
-//                 { vehicle_id: body._id },
-//                 { odometer: body.odometer },
-//                 { new: true }
-//             );
-//             console.log("Vehicle odometer updated successfully.");
-            
-//             return res.status(201).json(newServiceRecord);
-//         }
-//     } catch (err) {
-//         console.error("Error in registering vehicle service:", err);
-//         res.status(500).json({ error: 'Something went wrong while registering the vehicle service' });
-//     }
-// };
-
-
-//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-
-// serviceManagementCltr.vehicleServiceEstimation = async (req, res) => {
-
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//         console.log("Validation errors:", errors.array());
-//         return res.status(400).json({ errors: errors.array() });
-//     }
-
-//     const body = req.body;
-//     console.log("Request body:", body);
-
-//     try {
-//         // Check if the mobile number and vehicle number are already registered
-//         const existingRecord = await Vehicle.findOne({ vehicleNumber: body.vehicleNumber, mobile: body.mobile });
-//         if (existingRecord) {
-//             if (existingRecord.userName === body.userName && existingRecord.mobile === body.mobile && existingRecord.vehicleNumber === body.vehicleNumber) {
-                
-//                 // Save new service record as it's a duplicate but allowed based on user details matching
-//                 const newServiceRecord = new vehicleService(body);
-//                 await newServiceRecord.save();
-//                 console.log("Duplicate vehicle number found. Saved as a new service record.");
-
-//                 // Update the vehicle's odometer reading
-//                 await Vehicle.findOneAndUpdate(
-//                     { vehicleNumber: body.vehicleNumber },
-//                     { odometer: body.odometer },
-//                     { new: true }
-//                 );
-//                 console.log("Vehicle odometer updated successfully.");
-                
-//                 return res.status(201).json(newServiceRecord);
-//             } else {
-//                 console.log("Mobile number registered with different details.");
-//                 return res.status(400).json({ error: 'Mobile Number is already registered with different user details' });
-//             }
-//         } else {
-//             // Save service record as a new entry
-//             const newServiceRecord = new vehicleService(body);
-//             await newServiceRecord.save();
-//             console.log("New service record saved successfully.");
-
-//             // Update the vehicle's odometer reading
-//             await VehicleRegister.findOneAndUpdate(
-//                 { vehicle_id: body._id },
-//                 { odometer: body.odometer },
-//                 { new: true }
-//             );
-//             console.log("Vehicle odometer updated successfully.");
-            
-//             return res.status(201).json(newServiceRecord);
-//         }
-//     } catch (err) {
-//         console.error("Error in registering vehicle service:", err);
-//         res.status(500).json({ error: 'Something went wrong while registering the vehicle service' });
-//     }
-// };
-
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//       console.log("Validation errors:", errors.array());
-//       return res.status(400).json({ errors: errors.array() });
-//   }
-
-//   const body = req.body;
-//   console.log("Request body:", body);
-
-//   try {
-//       // Check if the mobile number and vehicle number are already registered
-//       const existingRecord = await Vehicle.findOne({ vehicleNumber: body.vehicleNumber, mobile: body.mobile });
-//       if (existingRecord) {
-//           if (existingRecord.userName === body.userName && existingRecord.mobile === body.mobile && existingRecord.vehicleNumber === body.vehicleNumber) {
-//               const newServiceRecord = new vehicleService(body);
-//               await newServiceRecord.save();
-//               console.log(" Vehicle number found. Saved estimation as a new service record.");
-
-//               // Update the vehicle's odometer reading
-//               await Vehicle.findOneAndUpdate(
-//                   { vehicleNumber: body.vehicleNumber },
-//                   { odometer: body.odometer },
-//                   { new: true }
-//               );
-//               console.log("Vehicle odometer updated successfully.");
-              
-//               return res.status(201).json(newServiceRecord);
-//           } else {
-//               console.log("Mobile number registered with different details.");
-//               return res.status(400).json({ error: 'Mobile Number is already registered with different user details' });
-//           }
-//       } else {
-//           // Save service record as a new entry
-//           const newServiceRecord = new vehicleService(body);
-//           await newServiceRecord.save();
-//           console.log("New service record saved successfully.");
-
-//           // Update the vehicle's odometer reading
-//           await VehicleRegister.findOneAndUpdate(
-//               { vehicle_id: body._id },
-//               { odometer: body.odometer },
-//               { new: true }
-//           );
-//           console.log("Vehicle odometer updated successfully.");
-          
-//           return res.status(201).json(newServiceRecord);
-//       }
-//   } catch (err) {
-//       console.error("Error in registering vehicle service:", err);
-//       res.status(500).json({ error: 'Something went wrong while registering the vehicle service' });
-//   }
-// };
 
 
 
@@ -317,6 +158,28 @@ serviceManagementCltr.customerVehicleReceivedDetails = async (req, res) => {
     }
 };
 
+
+serviceManagementCltr.priliminaryEstimationApprovalReject = async (req, res) => {
+  const vehicleNumber = req.params.vehicleNumber;
+
+  try {
+    const vehicleEstServices = await VehicleEstService.find({
+      vehicleNumber: vehicleNumber,
+    });
+
+    if (vehicleEstServices.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Vehicle service details not found" });
+    }
+
+    res.json(vehicleEstServices);
+  } catch (error) {
+    console.error("Error fetching vehicle service details:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+
+}
 
 
 
