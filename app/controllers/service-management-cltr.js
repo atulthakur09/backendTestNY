@@ -6,7 +6,7 @@ const vehicleService = require("../models/vehicle-service-register-model")
 const cloudinary = require('../../config/cloudinary');
 const fs = require('node:fs');
 const VehicleServiceEstimation = require("../models/vehicle-register-model")
-
+const VehicleService = require('../models/vehicle-service-register-model');
 const VehicleReceived = require('../models/service-management/vehicle-received-model');
 const VehicleReceivedDetails = require('../models/service-management/vehicle-received-model')
 const VehicleRegister = require("../models/vehicle-register-model")
@@ -140,6 +140,7 @@ serviceManagementCltr.vehicleServiceEstimation = async (req, res) => {
 
 
 
+
 // customer section   ----------------------------------------xxxxxxxxxxxxxxxxxxxxxxxxx------------------------------------------
 
 serviceManagementCltr.customerVehicleReceivedDetails = async (req, res) => {
@@ -158,28 +159,23 @@ serviceManagementCltr.customerVehicleReceivedDetails = async (req, res) => {
     }
 };
 
-
+//priliminary estimation approval display for customer
 serviceManagementCltr.priliminaryEstimationApprovalReject = async (req, res) => {
-  const vehicleNumber = req.params.vehicleNumber;
+  const { partnerId } = req.params;  // Extract vehicle number from request params
 
   try {
-    const vehicleEstServices = await VehicleEstService.find({
-      vehicleNumber: vehicleNumber,
-    });
-
-    if (vehicleEstServices.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "Vehicle service details not found" });
+    const vehicleServices = await VehicleService.find({ partnerId });
+    if (!vehicleServices.length) {
+      return res.status(404).json({ error: "Vehicle service details not found" });
     }
-
-    res.json(vehicleEstServices);
+    res.json(vehicleServices); 
   } catch (error) {
-    console.error("Error fetching vehicle service details:", error);
-    res.status(500).json({ error: "Server error" });
+    console.error('Error fetching vehicle service details:', error);
+    res.status(500).json({ error: 'Server error' });
   }
+};
 
-}
+
 
 
 

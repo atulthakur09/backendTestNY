@@ -4,39 +4,37 @@ const { Schema, model } = mongoose;
 const vehicleServiceRegisterSchema = new Schema({
     customer: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-       
-       
+        ref: 'User'  
     },
-    // email: {
-    //     type: String,
-        
-    // },
+    partnerId: {
+        type: String,
+        required: true  
+    },
     username: {
         type: String,
-        required: true,
+        // required: true,
         trim: true
     },
     vehicleNumber: {
         type: String,
-        required: true
+        // required: true
     },
     chassisNumber: {
         type: String,
-        required: true
+        // required: true
     },
     engineNumber: {
         type: String,
-        required: true
+        // required: true
     },
     dateOfRCReg:{
         type: String,
-        required: true
+        // required: true
 
     },
     model: {
         type: String,
-        required: true,
+        // required: true,
         trim: true
     },
     // fuel: {
@@ -46,7 +44,7 @@ const vehicleServiceRegisterSchema = new Schema({
     // },
     odometer: {
         type: Number,
-        required: true,
+        // required: true,
         min: 0,
         // validate: {
         //   validator: function(v) {
@@ -58,7 +56,7 @@ const vehicleServiceRegisterSchema = new Schema({
       },
     email: {
         type: String,
-        required: true,
+        // required: true,
         trim: true,
         // validate: {
         //     validator: function(v) {
@@ -69,7 +67,7 @@ const vehicleServiceRegisterSchema = new Schema({
     },
     mobile: {
         type: Number,
-        required: true,
+        // required: true,
         trim: true,
         validate: {
             validator: function(v) {
@@ -87,43 +85,36 @@ const vehicleServiceRegisterSchema = new Schema({
         {
             itemNumber: {
                 type: String,
-                // required: true,
+                required: true,
                 trim: true
             },
             partName: {
                 type: String,
-                // required: true,
+                required: true,
                 trim: true
             },
-            rate:{
-                type :Number,
-                // require:true
+            rate: {
+                type: Number,
+                required: true,
+                min: 0
             },
-            // rateNY:{
-            //     type :Number,
-            //     require:true
-            // },
             quantity: {
                 type: Number,
-                // required: true,
+                required: true,
                 min: 1
             },
             tax: {
-                type: String,
-                // required: true,
-                min: 1
+                type: Number,
+                required: true,
+                min: 0
             },
             mrp: {
                 type: Number,
-                // required: true,
+                required: true,
                 min: 0
             }
         }
     ],
-    // vehicleServiceImages: {
-    //     type: [String], // Array of file paths
-    //     default: []
-    // },
     vehicleServiceEstimationImages: {
             type: [String], // Array of file paths
             default: []

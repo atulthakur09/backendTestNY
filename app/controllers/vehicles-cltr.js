@@ -56,46 +56,188 @@ const safeUploadFileToCloudinary = async (file, folderName) => {
 };
 
 // Vehicle service add
+// vehiclesCltr.vehicleServiceRegister = async (req, res) => {
+//   try {
+//     // Validate request
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         console.log("Validation errors:", errors.array());
+//         return res.status(400).json({ success: false, errors: errors.array() });
+//     }
+//     const files = req.files;
+//     // Validate required files
+//     if (!req.files || !req.files.vehicleServiceEstimationImages || !req.files.capturedImages) {
+//       return res.status(400).json({ success: false, error: "Missing required files" });
+//     }
+
+//      // Upload files concurrently to Cloudinary
+//      const uploadResults = await Promise.all([
+//       safeUploadFileToCloudinary(files.vehicleServiceEstimationImages[0], CLOUDINARY_FOLDERS.vehicleServiceEstimationImages),
+//       safeUploadFileToCloudinary(files.capturedImages[0], CLOUDINARY_FOLDERS.capturedImages)
+//     ]);
+    
+//     const [vehicleServiceEstimationImagesResult, capturedImagesResult] = uploadResults;
+//     // Log uploaded URLs and local paths for debugging
+//     console.log("Uploaded URLs and Local Paths:", {
+//       vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult,
+//       capturedImages: capturedImagesResult,
+//     });
+//     // Create a new partner entry
+//     const estimationVehicleService = new VehicleServiceRegister({
+//       ...req.body,
+//       vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult.url,
+//       capturedImages: capturedImagesResult.url
+//     });
+//     // Save the new record
+//     await estimationVehicleService.save();
+
+//     // Cleanup local files after successful save
+//     await Promise.all([
+//       safeUnlink(vehicleServiceEstimationImagesResult.localPath),
+//       safeUnlink(capturedImagesResult.localPath)
+//     ]);
+//     // Return success response
+//     res.status(201).json(estimationVehicleService);
+//   } catch (err) {
+//     console.error("Error in creating estimation service:", err);
+//     res.status(500).json({
+//       error: "Something went wrong while creating estimation service",
+//     });
+//   }
+// };
+
+//working but only one image uploaded
+
+
+// vehiclesCltr.vehicleServiceRegister = async (req, res) => {
+//   try {
+//     // Validate request body
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//       console.log("Validation errors:", errors.array());
+//       return res.status(400).json({ success: false, errors: errors.array() });
+//     }
+
+//     // Validate and parse items
+//     const data = req.body;
+//     if (data.items && typeof data.items === "string") {
+//       try {
+//         data.items = JSON.parse(data.items);
+//       } catch (err) {
+//         return res.status(400).json({ success: false, error: "Invalid format for items field" });
+//       }
+//     }
+
+//     const files = req.files;
+//     // Validate required files
+//     if (!files || !files.vehicleServiceEstimationImages || !files.capturedImages) {
+//       return res.status(400).json({ success: false, error: "Missing required files" });
+//     }
+
+//     // Upload files concurrently to Cloudinary
+//     const [vehicleServiceEstimationImagesResult, capturedImagesResult] = await Promise.all([
+//       safeUploadFileToCloudinary(files.vehicleServiceEstimationImages[0], CLOUDINARY_FOLDERS.vehicleServiceEstimationImages),
+//       safeUploadFileToCloudinary(files.capturedImages[0], CLOUDINARY_FOLDERS.capturedImages)
+//     ]);
+
+//     // Log uploaded URLs for debugging
+//     console.log("Uploaded URLs:", {
+//       vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult.url,
+//       capturedImages: capturedImagesResult.url,
+//     });
+
+//     // Create a new VehicleService entry
+//     const estimationVehicleService = new VehicleServiceRegister({
+//       ...data,
+//       vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult.url,
+//       capturedImages: capturedImagesResult.url
+//     });
+
+//     // Save the new record
+//     await estimationVehicleService.save();
+
+//     // Cleanup local files
+//     await Promise.all([
+//       safeUnlink(vehicleServiceEstimationImagesResult.localPath),
+//       safeUnlink(capturedImagesResult.localPath)
+//     ]);
+
+//     // Return success response
+//     res.status(201).json(estimationVehicleService);
+//   } catch (err) {
+//     console.error("Error in creating estimation service:", err);
+//     res.status(500).json({
+//       error: "Something went wrong while creating estimation service",
+//     });
+//   }
+// };
+
 vehiclesCltr.vehicleServiceRegister = async (req, res) => {
   try {
-    // Validate request
+    // Validate request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log("Validation errors:", errors.array());
-        return res.status(400).json({ success: false, errors: errors.array() });
+      console.log("Validation errors:", errors.array());
+      return res.status(400).json({ success: false, errors: errors.array() });
     }
+
+    // Validate and parse items
+    const data = req.body;
+    if (data.items && typeof data.items === "string") {
+      try {
+        data.items = JSON.parse(data.items);
+      } catch (err) {
+        return res.status(400).json({ success: false, error: "Invalid format for items field" });
+      }
+    }
+
     const files = req.files;
     // Validate required files
-    if (!req.files || !req.files.vehicleServiceEstimationImages || !req.files.capturedImages) {
+    if (!files || !files.vehicleServiceEstimationImages || !files.capturedImages) {
       return res.status(400).json({ success: false, error: "Missing required files" });
     }
 
-     // Upload files concurrently to Cloudinary
-     const uploadResults = await Promise.all([
-      safeUploadFileToCloudinary(files.vehicleServiceEstimationImages[0], CLOUDINARY_FOLDERS.vehicleServiceEstimationImages),
-      safeUploadFileToCloudinary(files.capturedImages[0], CLOUDINARY_FOLDERS.capturedImages)
-    ]);
-    
-    const [vehicleServiceEstimationImagesResult, capturedImagesResult] = uploadResults;
-    // Log uploaded URLs and local paths for debugging
-    console.log("Uploaded URLs and Local Paths:", {
-      vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult,
-      capturedImages: capturedImagesResult,
+    // Prepare arrays to hold upload results
+    const uploadedVehicleServiceEstimationImages = [];
+    const uploadedCapturedImages = [];
+
+    // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
+    const vehicleServiceEstimationImagesUploads = files.vehicleServiceEstimationImages.map(async (file, index) => {
+      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
+      uploadedVehicleServiceEstimationImages.push(uploadResult.url);
     });
-    // Create a new partner entry
+
+    // Upload all capturedImages files concurrently to Cloudinary
+    const capturedImagesUploads = files.capturedImages.map(async (file, index) => {
+      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+      uploadedCapturedImages.push(uploadResult.url);
+    });
+
+    // Wait for all uploads to finish
+    await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+
+    // Log uploaded URLs for debugging
+    console.log("Uploaded URLs:", {
+      vehicleServiceEstimationImages: uploadedVehicleServiceEstimationImages,
+      capturedImages: uploadedCapturedImages,
+    });
+
+    // Create a new VehicleService entry
     const estimationVehicleService = new VehicleServiceRegister({
-      ...req.body,
-      vehicleServiceEstimationImages: vehicleServiceEstimationImagesResult.url,
-      capturedImages: capturedImagesResult.url
+      ...data,
+      vehicleServiceEstimationImages: uploadedVehicleServiceEstimationImages, // Store the array of URLs
+      capturedImages: uploadedCapturedImages, // Store the array of URLs
     });
+
     // Save the new record
     await estimationVehicleService.save();
 
-    // Cleanup local files after successful save
+    // Cleanup local files
     await Promise.all([
-      safeUnlink(vehicleServiceEstimationImagesResult.localPath),
-      safeUnlink(capturedImagesResult.localPath)
+      ...files.vehicleServiceEstimationImages.map((file) => safeUnlink(file.path)),
+      ...files.capturedImages.map((file) => safeUnlink(file.path)),
     ]);
+
     // Return success response
     res.status(201).json(estimationVehicleService);
   } catch (err) {
@@ -105,6 +247,8 @@ vehiclesCltr.vehicleServiceRegister = async (req, res) => {
     });
   }
 };
+
+
 
 // Register a new vehicle
 vehiclesCltr.register = async (req, res) => {

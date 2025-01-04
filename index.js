@@ -45,13 +45,29 @@ app.use((req, res, next) => {
   next();
 });
 
-
 //file uploads
 const upload =  multer({
   dest: path.resolve(__dirname,"./uploads"),
   limits:{fileSize:3e7 }   // 30mb ->  30*1024*1024  for 30mb
+}).fields([
+  // { name: "coverImage", maxCount: 10 },
+  { name: "shopImages", maxCount: 20 },
+  { name: "gstImages", maxCount: 10 },
+  { name: "panCard", maxCount: 5 },
+  { name: "aadhaarCard", maxCount: 4 },
+])
 
-})
+const upload1 = multer({
+  dest: path.resolve(__dirname, "./uploads"),
+  limits: { fileSize: 3e7 }  // 30MB
+}).fields([
+  { name: "vehicleServiceEstimationImages", maxCount: 100 },
+  { name: "capturedImages", maxCount: 100 }
+]);
+
+
+
+
 
 //vehicle service hardcoded price
 const vehicleServicesPrices = require('./app/controllers/vehicles-cltr');
@@ -104,28 +120,22 @@ app.get('/b2b/fleetGSTINInfo/:email', vehiclesCltr.b2bGSTINFleetInfo);
 
 // Dealer routes
 // adding new service details of selected user 
-app.post(
-  "/estService/register",
-  upload.fields([
-      { name: "vehicleServiceEstimationImages", maxCount: 10 },
-      { name: "capturedImages", maxCount: 10 }
-  ]),vehiclesCltr.vehicleServiceRegister);
+app.post("/estService/register", upload1, vehiclesCltr.vehicleServiceRegister);
+// app.post("/estService/register",
+//   upload.fields([
+//       { name: "vehicleServiceEstimationImages", maxCount: 10 },
+//       { name: "capturedImages", maxCount: 10 }
+//   ]),vehiclesCltr.vehicleServiceRegister);
 
 //dealer service history for all vehicles
 app.get("/dealer/service/register/:vehicleNumber",dealersCltr.vehicleServiceHistory)
+//dealer get est appointment for perticular dealer by dealer
+app.get("/dealer/estService/register/:partnerId",serviceManagementCltr.priliminaryEstimationApprovalReject)
+
+
 
 //become a partner register
-app.post(
-  "/becomeAPartner/dealerRegister",
-  upload.fields([
-    // { name: "coverImage", maxCount: 10 },
-    { name: "shopImages", maxCount: 10 },
-    { name: "gstImages", maxCount: 3 },
-    { name: "panCard", maxCount: 1 },
-    { name: "aadhaarCard", maxCount: 2 },
-  ]),
-  dealersCltr.becomeAPartner
-);
+app.post("/becomeAPartner/dealerRegister", upload, dealersCltr.becomeAPartner);
 
 //dealer info 
 app.get("/partner/:userId",dealersCltr.dealerRegisterDetails)
@@ -143,15 +153,16 @@ app.get("/todaysAppointment/:dealerId",dealersCltr.todaysDealerAppointments)
 
 app.post('/service-management/vehicle-received', serviceManagementCltr.vehicleReceived);
 app.get('/service-management/vehicle-received/:partnerId', serviceManagementCltr.vehicleReceivedDetails)
-//
-app.post(
-  "/service/estimation",
-  upload.fields([{ name: "vehicleServiceEstimationImages", maxCount: 100 },
-    {name:"capturedImage", maxCount:150},
-  ]),
-  serviceManagementCltr.vehicleServiceEstimation
+//temporary comment
+// app.post(
+//   "/service/estimation",
+//   upload.fields([
+//     {name: "vehicleServiceEstimationImages", maxCount: 100 },
+//     {name:"capturedImage", maxCount:150},
+//   ]),
+//   serviceManagementCltr.vehicleServiceEstimation
 
-);
+// );
 
 // service management end
 
@@ -161,8 +172,8 @@ app.post(
 
 // Admin routes
 //admin get vehicle information
-// app.get('/admin/vehicles/:vehicleNumber' , vehiclesCltr.getVehicleByNumber)
-// app.get('/admin/vehicles/:vehicleNumber' , dealersCltr.getVehicleByNumber)
+app.get('/admin/vehicles/:vehicleNumber' , vehiclesCltr.getVehicleByNumber)
+
 
 
 
@@ -198,6 +209,38 @@ app.get('/vehicleReceivedStatus/:vehicleNumber',serviceManagementCltr.customerVe
 
 // app.get('/api/vehicles', authenticateUser, vehiclesCltr.list);
 // app.post('/api/vehicles', authenticateUser, authorizeUser(['admin']), vehiclesCltr.create);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//test
+
+
+
+
+
+
+
+
+
+
 
 
 // Start the server
