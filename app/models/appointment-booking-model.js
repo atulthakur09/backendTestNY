@@ -53,7 +53,7 @@ const appointmentBookingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        match: /^[A-Z0-9\s-]+$/i // Alphanumeric with spaces and hyphens allowed
+        // match: /^[A-Z0-9\s-]+$/i // Alphanumeric with spaces and hyphens allowed
     },
     serviceType: {
         type: String,
@@ -71,17 +71,7 @@ const appointmentBookingSchema = new Schema({
         required: true,  
         // trim: true      
     },
-    pickupAddress: {
-        type: String,
-        required: false,  
-        trim: true      
-    },
-    dropAddress: {
-        type: String,
-        required: false,  
-        trim: true      
-    },
-    billingAddress: {
+    pickupAndDropAddress: {
         type: String,
         required: false,  
         trim: true      
