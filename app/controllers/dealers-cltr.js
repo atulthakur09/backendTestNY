@@ -583,7 +583,20 @@ dealersCltr.vehicleServiceHistory = async (req, res) => {
 };
 
 
+dealersCltr.priliminaryEsApprovalRejectByUser = async (req, res) => {
+  const { userId } = req.params;  // Extract vehicle number from request params
 
+  try {
+    const vehicleServices = await VehicleService.find({ userId });
+    if (!vehicleServices.length) {
+      return res.status(404).json({ error: "Vehicle service details not found" });
+    }
+    res.json(vehicleServices); 
+  } catch (error) {
+    console.error('Error fetching vehicle service details:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
 
 

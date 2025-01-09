@@ -99,8 +99,10 @@ app.get('/service/register/:vehicleNumber',vehiclesCltr.vehicleServiceList)
 app.get('/AppointmentsList/:userId', vehiclesCltr.myAppointmentsList)
 
 //users vehicle service history or record
-app.get('/service/register/:vehicleNumber',dealersCltr.vehicleServiceList)
+// app.get('/service/register/:vehicleNumber',dealersCltr.vehicleServiceList)                             //temporary comment
 
+//approval or reject of the service estimation
+app.get("/user/estService/registerApproval/:userId",dealersCltr.priliminaryEsApprovalRejectByUser)
 
 
 

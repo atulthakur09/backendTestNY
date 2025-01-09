@@ -136,6 +136,21 @@ serviceManagementCltr.vehicleServiceEstimation = async (req, res) => {
 }
 }
 
+//priliminary estimation approval display for deal display
+serviceManagementCltr.priliminaryEstimationApprovalReject = async (req, res) => {
+  const { partnerId } = req.params;  // Extract vehicle number from request params
+
+  try {
+    const vehicleServices = await VehicleService.find({ partnerId });
+    if (!vehicleServices.length) {
+      return res.status(404).json({ error: "Vehicle service details not found" });
+    }
+    res.json(vehicleServices); 
+  } catch (error) {
+    console.error('Error fetching vehicle service details:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
 
 
@@ -160,17 +175,17 @@ serviceManagementCltr.customerVehicleReceivedDetails = async (req, res) => {
 };
 
 //priliminary estimation approval display for customer
-serviceManagementCltr.priliminaryEstimationApprovalReject = async (req, res) => {
-  const { partnerId } = req.params;  // Extract vehicle number from request params
+serviceManagementCltr.priliminaryEsApprovalRejectByUser = async (req, res) => {
+  const { userId } = req.params;  // Extract vehicle number from request params
 
   try {
-    const vehicleServices = await VehicleService.find({ partnerId });
+    const vehicleServices = await VehicleService.find({ userId });
     if (!vehicleServices.length) {
       return res.status(404).json({ error: "Vehicle service details not found" });
     }
     res.json(vehicleServices); 
   } catch (error) {
-    console.error('Error fetching vehicle service details:', error);
+    console.error('Error fetching vehicle estimation details:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
