@@ -104,6 +104,11 @@ app.get('/AppointmentsList/:userId', vehiclesCltr.myAppointmentsList)
 //approval or reject of the service estimation
 app.get("/user/estService/registerApproval/:userId",dealersCltr.priliminaryEsApprovalRejectByUser)
 
+// approval or reject of the service estimation update 
+app.put("/user/estService/update/:estimationId",dealersCltr.EstApprovalRejectByUser)
+
+app.put("/user/estServiceDismantelingProcess/update/:estimationId", upload1,dealersCltr.EstDismantelingProcess)
+
 
 
 

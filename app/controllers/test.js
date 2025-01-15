@@ -602,37 +602,6 @@ dealersCltr.priliminaryEsApprovalRejectByUser = async (req, res) => {
 };
 
 //accept or reject after customer action  updatee    working properly 
-dealersCltr.EstApprovalRejectByUser = async (req, res) => {
-  const estimationId = req.params.estimationId; // Corrected to match the route parameter
-  const updatedData = req.body;
-
-  try {
-    // Validate the estimation ID
-    if (!mongoose.Types.ObjectId.isValid(estimationId)) {
-      console.log('Invalid estimation ID:', estimationId);
-      return res.status(400).json({ error: 'Invalid estimation ID' });
-    }
-
-    // Find the estimation by ID and update it
-    const estimation = await Estimation.findByIdAndUpdate(
-      estimationId,
-      { $set: updatedData },
-      { new: true, runValidators: true }
-    );
-
-    // Check if the estimation exists
-    if (!estimation) {
-      return res.status(404).json({ error: 'Estimation not found' });
-    }
-
-    // Success response
-    res.status(200).json({ message: 'Estimation updated successfully', estimation });
-  } catch (err) {
-    console.error('Error updating estimation:', err);
-    res.status(500).json({ error: 'Server error while updating estimation' });
-  }
-};
-
 
 // dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 //   try {
@@ -711,15 +680,11 @@ dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 // }
 
 dealersCltr.EstDismantelingProcess = async (req, res) => {
-  
   try {
     const { estimationId } = req.params;
     const files = req.files;
     const uploadedVehicleServiceEstimationImages = [];
     const uploadedCapturedImages = [];
-    const items =  req.body.items
-    console.log("estID ",estimationId )
-  console.log("722",items)
 
     // Upload files concurrently to Cloudinary
     const vehicleServiceEstimationImagesUploads = files.vehicleServiceEstimationImages.map(async (file) => {
@@ -770,7 +735,7 @@ dealersCltr.EstDismantelingProcess = async (req, res) => {
 
     // Update the document in MongoDB
     const updatedService = await Estimation.findByIdAndUpdate(estimationId, 
-      updateData,
+      updateData, 
       //  req.body,
       { new: true, runValidators: true });
 

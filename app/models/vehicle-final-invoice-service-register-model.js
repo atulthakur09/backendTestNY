@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-const vehicleServiceRegisterSchema = new Schema({
+const vehicleFinalInvoiceServiceRegisterSchema = new Schema({
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'User'  
@@ -10,34 +10,6 @@ const vehicleServiceRegisterSchema = new Schema({
         type: String,
         required: true  
     },
-    workshopName: {
-        type: String,
-        required: true  
-    },
-    workshopEmail: {
-        type: String,
-        required: true  
-    },
-    workshopAddress: {
-        type: String,
-        required: true  
-    },
-    workshopMobile: {
-        type: String,
-        required: true  
-    },
-    workshopCity: {
-        type: String,
-        required: true  
-    },
-    workshopState: {
-        type: String,
-        required: true  
-    },
-
-
-
-
     userId: {
         type: String,
         required: true  
@@ -161,39 +133,15 @@ const vehicleServiceRegisterSchema = new Schema({
         type: Number,
         required: true,
         min: 0
-    },
-
-    //for customer
-    comment: { type: String, default: '' },
-    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' }, //for customer
-    //for dealer
-    dismantale:{ type: String, default: 'N/A' },  //comment for dism
-    dealerDismantlingReq: { type: String, enum: ['N/A', 'Required', 'Not Required'], default: 'Not Required' },
-    dismantaleComment: { type: String, default: '' },
-    dismantaleStatus: { type: String, enum: ['In Progress', 'Approved', 'Rejected'], default: 'In Progress' },
-    // dismantel process page4
-    dismantaleApprovalByDealer: { type: String, enum: [ 'Require', 'Not Require'], default: 'Not Require' },
-    dismantaleCompleted:{ type: String, enum: ['In Progress', 'Completed'], default: 'In Progress' },
-    additionalDismantalStatus:{ type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
-    additionalDismantalComment:{ type: String, default: '' },
-
-
-    partsOrdered:{ type: String, enum: ['N/A', 'Ordered', 'In Transit',"Order Recieved"], default: 'N/A' },
-    workInProgress:{ type: String, enum: ['In Progress', 'Completed'], default: 'In Progress' },
-    preInvoice:{ type: String, enum: ['Invoice Generated', 'N/A'], default: 'N/A' },
-      
-
-
-
-
-
+    }
+    ,
   createdAt: {
     type: Date,
     default: Date.now
   }
 }, { timestamps: true });
 
-const VehicleService = model('VehicleService', vehicleServiceRegisterSchema);
+const VehicleFinalInvoiceService = model('VehicleFinalInvoiceService', vehicleFinalInvoiceServiceRegisterSchema);
 
-module.exports = VehicleService;
+module.exports = VehicleFinalInvoiceService;
 
