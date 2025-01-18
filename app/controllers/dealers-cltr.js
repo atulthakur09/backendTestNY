@@ -634,6 +634,35 @@ dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 };
 
 
+//invoice gen
+dealersCltr.getEstimationById = async (req, res) => {
+  const estimationId = req.params.estimationId; // Corrected to match the route parameter
+
+  try {
+    // Validate the estimation ID
+    if (!mongoose.Types.ObjectId.isValid(estimationId)) {
+      console.log('Invalid estimation ID:', estimationId);
+      return res.status(400).json({ error: 'Invalid estimation ID' });
+    }
+
+    // Find the estimation by ID
+    const estimation = await Estimation.findById(estimationId);
+
+    // Check if the estimation exists
+    if (!estimation) {
+      return res.status(404).json({ error: 'Estimation not found' });
+    }
+
+    // Success response
+    res.status(200).json({ message: 'Estimation retrieved successfully', estimation });
+  } catch (err) {
+    console.error('Error retrieving estimation:', err);
+    res.status(500).json({ error: 'Server error while retrieving estimation' });
+  }
+};
+
+
+
 // dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 //   try {
 //     const { estimationId } = req.params;

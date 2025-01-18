@@ -106,8 +106,11 @@ app.get("/user/estService/registerApproval/:userId",dealersCltr.priliminaryEsApp
 
 // approval or reject of the service estimation update 
 app.put("/user/estService/update/:estimationId",dealersCltr.EstApprovalRejectByUser)
-
+//upload  files in additional approval
 app.put("/user/estServiceDismantelingProcess/update/:estimationId", upload1,dealersCltr.EstDismantelingProcess)
+//getEstimationById in invoice generate
+app.get("/invoice/:estimationId",dealersCltr.getEstimationById )
+
 
 
 
@@ -123,7 +126,8 @@ app.get('/b2b/fleetGSTINInfo/:email', vehiclesCltr.b2bGSTINFleetInfo);
 
 
 
-
+// demooo
+app.put("/estService/register1111/:id", upload1, vehiclesCltr.vehicleServiceUpdate)
 
 // Dealer routes
 // adding new service details of selected user 
@@ -138,7 +142,8 @@ app.post("/estService/register", upload1, vehiclesCltr.vehicleServiceRegister);
 app.get("/dealer/service/register/:vehicleNumber",dealersCltr.vehicleServiceHistory)
 //dealer get est appointment for perticular dealer by dealer
 app.get("/dealer/estService/register/:partnerId",serviceManagementCltr.priliminaryEstimationApprovalReject)
-
+//billing details
+app.get('/billing/:email', vehiclesCltr.b2bGSTINFleetInfo);
 
 
 //become a partner register
