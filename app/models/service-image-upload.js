@@ -1,12 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const serviceImageUploadSchema = new mongoose.Schema({
-serviceImages: {
+  serviceImages: {
     type: [String], // Array of file paths
-    default: []
+    default: [],
   },
-})
+});
 
-const ServiceImageUpload = mongoose.model('ServiceImageUpload', serviceImageUploadSchema);
+const ServiceImageUpload = mongoose.model(
+  "ServiceImageUpload",
+  serviceImageUploadSchema
+);
 
 module.exports = ServiceImageUpload;

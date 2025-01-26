@@ -1,80 +1,80 @@
 const b2bFleetInfoValidationSchema = {
-    businessName: {
-        in: ['body'], // Specify location explicitly
-        exists: {
-            errorMessage: 'Business name is required',
-        },
-        notEmpty: {
-            errorMessage: 'Business name cannot be empty',
-        },
-        trim: true,
-        isString: {
-            errorMessage: 'Business name must be a string',
-        },
-        escape: true,
+  businessName: {
+    in: ["body"], // Specify location explicitly
+    exists: {
+      errorMessage: "Business name is required",
     },
-    contact: {
-        in: ['body'],
-        exists: {
-            errorMessage: 'Contact number is required',
-        },
-        notEmpty: {
-            errorMessage: 'Contact number cannot be empty',
-        },
-        trim: true,
-        isNumeric: {
-            errorMessage: 'Contact number must contain only numbers',
-        },
-        isLength: {
-            options: { min: 10, max: 10 },
-            errorMessage: 'Contact number must be 10 digits long',
-        },
-        matches: {
-            options: /^[0-9]{10}$/,
-            errorMessage: 'Contact number must be a valid 10-digit number',
-        },
+    notEmpty: {
+      errorMessage: "Business name cannot be empty",
     },
-    email: {
-        in: ['body'],
-        exists: {
-            errorMessage: 'Email is required',
-        },
-        notEmpty: {
-            errorMessage: 'Email cannot be blank',
-        },
-        isEmail: {
-            errorMessage: 'Invalid email format',
-        },
-        normalizeEmail: true,
-        trim: true,
+    trim: true,
+    isString: {
+      errorMessage: "Business name must be a string",
     },
-    billingAddress: {
-        in: ['body'],
-        exists: {
-            errorMessage: 'Billing address is required',
-        },
-        notEmpty: {
-            errorMessage: 'Billing address cannot be empty',
-        },
-        trim: true,
+    escape: true,
+  },
+  contact: {
+    in: ["body"],
+    exists: {
+      errorMessage: "Contact number is required",
     },
-    gstin: {
-        in: ['body'],
-        exists: {
-            errorMessage: 'GSTIN is required',
-        },
-        notEmpty: {
-            errorMessage: 'GSTIN cannot be empty',
-        },
-        trim: true,
-        isString: {
-            errorMessage: 'GSTIN must be a string',
-        },
-        matches: {
-            options: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/,
-            errorMessage: 'Invalid GSTIN format',
-        },
+    notEmpty: {
+      errorMessage: "Contact number cannot be empty",
     },
+    trim: true,
+    isNumeric: {
+      errorMessage: "Contact number must contain only numbers",
+    },
+    isLength: {
+      options: { min: 10, max: 10 },
+      errorMessage: "Contact number must be 10 digits long",
+    },
+    matches: {
+      options: /^[0-9]{10}$/,
+      errorMessage: "Contact number must be a valid 10-digit number",
+    },
+  },
+  email: {
+    in: ["body"],
+    exists: {
+      errorMessage: "Email is required",
+    },
+    notEmpty: {
+      errorMessage: "Email cannot be blank",
+    },
+    isEmail: {
+      errorMessage: "Invalid email format",
+    },
+    normalizeEmail: true,
+    trim: true,
+  },
+  billingAddress: {
+    in: ["body"],
+    exists: {
+      errorMessage: "Billing address is required",
+    },
+    notEmpty: {
+      errorMessage: "Billing address cannot be empty",
+    },
+    trim: true,
+  },
+  gstin: {
+    in: ["body"],
+    exists: {
+      errorMessage: "GSTIN is required",
+    },
+    notEmpty: {
+      errorMessage: "GSTIN cannot be empty",
+    },
+    trim: true,
+    isString: {
+      errorMessage: "GSTIN must be a string",
+    },
+    matches: {
+      options: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/,
+      errorMessage: "Invalid GSTIN format",
+    },
+  },
 };
 
 module.exports = b2bFleetInfoValidationSchema;
@@ -205,7 +205,7 @@ module.exports = b2bFleetInfoValidationSchema;
 // //             errorMessage: 'invalid email format'
 // //         },
 // //         normalizeEmail: true,
-// //         trim: true 
+// //         trim: true
 // //     },
 // //     address: {
 // //         in: ['body'],
@@ -215,7 +215,7 @@ module.exports = b2bFleetInfoValidationSchema;
 // //         notEmpty: {
 // //             errorMessage: 'address cannot be empty'
 // //         },
-// //         trim: true 
+// //         trim: true
 // //     },
 // //     gstin: {
 // //         exists: {

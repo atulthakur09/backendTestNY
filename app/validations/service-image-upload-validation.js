@@ -1,4 +1,3 @@
-const ServiceImageUpload = require('../models/vehicle-register-model');
+const ServiceImageUpload = require("../models/vehicle-register-model");
 
-
-const serviceImageUploadValidationSchema = {}
+const serviceImageUploadValidationSchema = {};

@@ -1,82 +1,81 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 // Define the schema for the Dealer model
 const dealerSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true  
-},
+    required: true,
+  },
   workshopName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
-  
+
   ownerName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   state: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   city: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   pinCode: {
     type: Number,
     required: true,
-    trim: true
+    trim: true,
   },
   address: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   mobileNumber: {
     type: String, // Changed from Number to String for mobile numbers
     required: true,
     unique: true,
-    trim: true
+    trim: true,
   },
   liveLocation: {
     lat: {
       type: String,
-      required: true
+      required: true,
     },
     lng: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   shopImages: {
     type: [String], // Array of file paths
-    default: []
+    default: [],
   },
   gstImages: {
     type: [String], // Array of file paths
-    default: []
+    default: [],
   },
   panCard: {
     type: [String], // Single file path
-    default: null
+    default: null,
   },
   aadhaarCard: {
     type: [String], // Single file path
-    default: null
+    default: null,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Create the Dealer model
-const Dealer = mongoose.model('Dealer', dealerSchema);
+const Dealer = mongoose.model("Dealer", dealerSchema);
 
 module.exports = Dealer;
-

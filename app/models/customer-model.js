@@ -1,18 +1,21 @@
-const mongoose = require('mongoose')
-const { Schema, model } = mongoose 
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-const customerSchema = new Schema({
+const customerSchema = new Schema(
+  {
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     firstName: String,
     lastName: String,
     mobile: String,
     address: String,
-    vehicleNumber: String
-}, { timestamps: true })
+    vehicleNumber: String,
+  },
+  { timestamps: true }
+);
 
-const Customer = model('Customer', customerSchema)
+const Customer = model("Customer", customerSchema);
 
-module.exports = Customer 
+module.exports = Customer;

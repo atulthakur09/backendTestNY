@@ -1,20 +1,18 @@
-const path = require('node:path');
-const fs = require('node:fs');
-const mongoose = require('mongoose');
+const path = require("node:path");
+const fs = require("node:fs");
+const mongoose = require("mongoose");
 
-const { validationResult } = require('express-validator');
-const cloudinary = require('../../config/cloudinary');
-const BecomeAPartner = require('../models/become-a-partner-model');
-const PartnerDetails = require('../models/become-a-partner-model');
-const AllPartnerList = require('../models/become-a-partner-model');
-const TodaysDealerAppointment = require("../models/appointment-booking-model")
+const { validationResult } = require("express-validator");
+const cloudinary = require("../../config/cloudinary");
+const BecomeAPartner = require("../models/become-a-partner-model");
+const PartnerDetails = require("../models/become-a-partner-model");
+const AllPartnerList = require("../models/become-a-partner-model");
+const TodaysDealerAppointment = require("../models/appointment-booking-model");
 
-
-const VehicleService = require('../models/vehicle-service-register-model'); 
-const Estimation = require('../models/vehicle-service-register-model'); 
-const VehicleRegister = require('../models/vehicle-register-model');
+const VehicleService = require("../models/vehicle-service-register-model");
+const Estimation = require("../models/vehicle-service-register-model");
+const VehicleRegister = require("../models/vehicle-register-model");
 const dealersCltr = {};
-
 
 // Cloudinary folder configuration
 const CLOUDINARY_FOLDERS = {
@@ -175,13 +173,21 @@ dealersCltr.becomeAPartner = async (req, res) => {
       try {
         data.items = JSON.parse(data.items);
       } catch (err) {
-        return res.status(400).json({ success: false, error: "Invalid format for items field" });
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid format for items field" });
       }
     }
 
     // Get uploaded files
     const files = req.files;
-    if (!files || !files.shopImages || !files.gstImages || !files.panCard || !files.aadhaarCard) {
+    if (
+      !files ||
+      !files.shopImages ||
+      !files.gstImages ||
+      !files.panCard ||
+      !files.aadhaarCard
+    ) {
       return res.status(400).json({ error: "Missing required files" });
     }
 
@@ -192,33 +198,47 @@ dealersCltr.becomeAPartner = async (req, res) => {
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
     const shopImagesUploads = files.shopImages.map(async (file, index) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.shopImages);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.shopImages
+      );
       uploadedShopImages.push(uploadResult.url);
     });
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
     const gstImagessUploads = files.gstImages.map(async (file, index) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.gstImages);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.gstImages
+      );
       uploadedGstImages.push(uploadResult.url);
     });
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
     const panCardUploads = files.panCard.map(async (file, index) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.panCard);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.panCard
+      );
       uploadedPanCard.push(uploadResult.url);
     });
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
     const aadhaarCardUploads = files.aadhaarCard.map(async (file, index) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.aadhaarCard);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.aadhaarCard
+      );
       uploadedAadhaarCard.push(uploadResult.url);
     });
 
     // Wait for all uploads to finish
-    await Promise.all([...shopImagesUploads, ...gstImagessUploads, ...panCardUploads, ...aadhaarCardUploads]);
-
-  
-    
+    await Promise.all([
+      ...shopImagesUploads,
+      ...gstImagessUploads,
+      ...panCardUploads,
+      ...aadhaarCardUploads,
+    ]);
 
     // Log uploaded URLs and local paths for debugging
     console.log("Uploaded URLs and Local Paths:", {
@@ -227,8 +247,6 @@ dealersCltr.becomeAPartner = async (req, res) => {
       panCard: uploadedPanCard,
       aadhaarCard: uploadedAadhaarCard,
     });
-
-
 
     // Create a new partner entry
     const newPartner = new BecomeAPartner({
@@ -254,12 +272,11 @@ dealersCltr.becomeAPartner = async (req, res) => {
     res.status(201).json(newPartner);
   } catch (err) {
     console.error("Error in partner registration:", err.message);
-    res.status(500).json({ error: "Internal Server Error", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: err.message });
   }
 };
-
-
-
 
 //fetch partner details
 dealersCltr.dealerRegisterDetails = async (req, res) => {
@@ -268,34 +285,46 @@ dealersCltr.dealerRegisterDetails = async (req, res) => {
   try {
     const partnerDetails = await PartnerDetails.findOne({ userId: userId });
     if (partnerDetails.length === 0) {
-      return res.status(404).json({ error: 'No Registered Partner found for this user' });
+      return res
+        .status(404)
+        .json({ error: "No Registered Partner found for this user" });
     }
     res.json(partnerDetails);
   } catch (err) {
     console.error("Error in fetching Registered Partner details:", err);
-    res.status(500).json({ error: 'Something went wrong while fetching the Registered Partner details' });
+    res
+      .status(500)
+      .json({
+        error:
+          "Something went wrong while fetching the Registered Partner details",
+      });
   }
 };
 
-
 //All dealer list
 dealersCltr.AllPartnerList = async (req, res) => {
-  const { state, city } = req.query;  // Assuming state and city are passed as query parameters
-  
+  const { state, city } = req.query; // Assuming state and city are passed as query parameters
+
   try {
-    const allPartnerList = await AllPartnerList.find({ state: state, city: city });
-    
+    const allPartnerList = await AllPartnerList.find({
+      state: state,
+      city: city,
+    });
+
     if (allPartnerList.length === 0) {
       return res.status(404).json({ error: "No dealer found near your city" });
     }
-    
+
     res.json(allPartnerList);
   } catch (err) {
     console.error("Error in fetching Dealer details:", err);
-    res.status(500).json({ error: 'Something went wrong while fetching the Partner details' });
+    res
+      .status(500)
+      .json({
+        error: "Something went wrong while fetching the Partner details",
+      });
   }
-}
-
+};
 
 // //Search dealer by Id
 // dealersCltr.searchPartner = async (req, res) => {
@@ -313,53 +342,50 @@ dealersCltr.AllPartnerList = async (req, res) => {
 //   }
 // };
 
-
-
-
 //appointment list view for dealer
 dealersCltr.todaysDealerAppointments = async (req, res) => {
   const dealerId = req.params.dealerId;
 
   try {
     // Fetch appointments for today
-    const todaysAppointmentBooking = await TodaysDealerAppointment.find({ dealerId: dealerId });
-    
+    const todaysAppointmentBooking = await TodaysDealerAppointment.find({
+      dealerId: dealerId,
+    });
+
     // Check if appointments were found
     if (todaysAppointmentBooking.length === 0) {
-      return res.status(404).json({ error: 'No appointments found for today' });
+      return res.status(404).json({ error: "No appointments found for today" });
     }
 
     // Return the found appointments
     res.json(todaysAppointmentBooking);
-    
   } catch (err) {
     console.error("Error in fetching appointments:", err);
-    res.status(500).json({ error: 'Something went wrong while fetching the appointments' });
+    res
+      .status(500)
+      .json({ error: "Something went wrong while fetching the appointments" });
   }
 };
 
-
-
 ////////////new       wwwwwwwwwwwwwwwwwwwwwwwww
 
-
-//  Fetch all vehicles for admin 
+//  Fetch all vehicles for admin
 
 dealersCltr.getVehicleByNumber = async (req, res) => {
   const vehicleNumber = req.params.vehicleNumber;
   try {
-      const vehicles = await Vehicle.findOne({ vehicleNumber: vehicleNumber });
-      if (vehicles.length === 0) {
-          return res.status(404).json({ error: 'Vehicle not found' });
-      }
-      res.json(vehicles);
+    const vehicles = await Vehicle.findOne({ vehicleNumber: vehicleNumber });
+    if (vehicles.length === 0) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+    res.json(vehicles);
   } catch (err) {
-      console.error("Error in fetching vehicle:", err);
-      res.status(500).json({ error: 'Something went wrong while fetching the vehicle' });
+    console.error("Error in fetching vehicle:", err);
+    res
+      .status(500)
+      .json({ error: "Something went wrong while fetching the vehicle" });
   }
 };
-
-
 
 // Vehicle service register
 // dealersCltr.vehicleServiceRegister = async (req, res) => {
@@ -379,17 +405,17 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 
 //     // Upload each file to Cloudinary and log the local path
 //     const vehicleServiceImagesResult = await uploadFileToCloudinary(files.vehicleServiceImages[0], "shop-images");
-    
+
 //     // Log uploaded URLs and local paths for debugging
 //     console.log("Uploaded URLs and Local Paths:", {
 //       vehicleServiceImages: vehicleServiceImagesResult,
-      
+
 //     });
 //     // Create a new partner entry with the uploaded URLs and request body
 //     const newPartner = new BecomeAPartner({
 //       ...req.body,
 //       vehicleServiceImages: vehicleServiceImagesResult.url,
-      
+
 //     });
 //     // Save the new partner record
 //     await newPartner.save();
@@ -403,8 +429,6 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //     res.status(500).json({ error: 'Something went wrong while saving service  details' });
 //   }
 // };
-
-
 
 // dealersCltr.vehicleServiceRegister = async (req, res) => {
 //   const errors = validationResult(req);
@@ -421,7 +445,7 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //       const existingRecord = await Vehicle.findOne({ vehicleNumber: body.vehicleNumber, mobile: body.mobile });
 //       if (existingRecord) {
 //           if (existingRecord.userName === body.userName && existingRecord.mobile === body.mobile && existingRecord.vehicleNumber === body.vehicleNumber) {
-              
+
 //               // Save new service record as it's a duplicate but allowed based on user details matching
 //               const newServiceRecord = new vehicleService(body);
 //               await newServiceRecord.save();
@@ -434,7 +458,7 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //                   { new: true }
 //               );
 //               console.log("Vehicle odometer updated successfully.");
-              
+
 //               return res.status(201).json(newServiceRecord);
 //           } else {
 //               console.log("Mobile number registered with different details.");
@@ -453,7 +477,7 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //               { new: true }
 //           );
 //           console.log("Vehicle odometer updated successfully.");
-          
+
 //           return res.status(201).json(newServiceRecord);
 //       }
 //   } catch (err) {
@@ -461,13 +485,6 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //       res.status(500).json({ error: 'Something went wrong while registering the vehicle service' });
 //   }
 // };
-
-
-
-
-
-
-
 
 // dealersCltr.vehicleService = async (req, res) => {
 //   // Validate request
@@ -484,7 +501,6 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //     // Check if there's an existing record with the same vehicle number and mobile
 //     const existingRecord = await VehicleService.findOne({ vehicleNumber, mobile });
 
-
 //     // Get uploaded files
 //     const files = req.files;
 //     if (!files || !files.servicePartsImage ) {
@@ -493,22 +509,18 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 
 //     // Upload each file to Cloudinary and log the local path
 //     const servicePartsImageResult = await uploadFileToCloudinary(files.servicePartsImage[0], "service-parts-image");
-    
 
 //     // Log uploaded URLs and local paths for debugging
 //     console.log("Uploaded URLs and Local Paths:", {
 //       servicePartsImage: servicePartsImageResult
 //     });
 
-
-
 //     // Create a new partner entry with the uploaded URLs and request body
 //     const newBody = new VehicleService({
 //       ...req.body,
 //       servicePartsImage: servicePartsImageResult.url
-      
-//     });
 
+//     });
 
 //     // If an exact match exists for username, vehicleNumber, and mobile
 //     if (
@@ -531,7 +543,6 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //     // Delete temporary files from local `uploads` folder after successful save
 //     await fs.promises.unlink(servicePartsImageResult.localPath);
 
-
 //     console.log("New vehicle and service record created successfully.");
 //     return res.status(201).json({ message: "New vehicle and service record created successfully." });
 
@@ -541,67 +552,65 @@ dealersCltr.getVehicleByNumber = async (req, res) => {
 //   }
 // };
 
-
-
-
-
-
-
-
-
 // Vehicle service List of vehicle
 dealersCltr.vehicleServiceList = async (req, res) => {
   const vehicleNumber = req.params.vehicleNumber;
-  
+
   try {
-      
-      const vehicleServices = await VehicleService.find({ vehicleNumber: vehicleNumber });
+    const vehicleServices = await VehicleService.find({
+      vehicleNumber: vehicleNumber,
+    });
 
-      if (vehicleServices.length === 0) {
-          return res.status(404).json({ error: "Vehicle service details not found" });
-      }
+    if (vehicleServices.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Vehicle service details not found" });
+    }
 
-      res.json(vehicleServices); 
+    res.json(vehicleServices);
   } catch (error) {
-      console.error('Error fetching vehicle service details:', error);
-      res.status(500).json({ error: 'Server error' });
+    console.error("Error fetching vehicle service details:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-
 // Dealer service history of a vehicle by vehicleNumber
 dealersCltr.vehicleServiceHistory = async (req, res) => {
-  const { vehicleNumber } = req.params;  // Extract vehicle number from request params
+  const { vehicleNumber } = req.params; // Extract vehicle number from request params
 
   try {
     const vehicleServices = await VehicleService.find({ vehicleNumber });
     if (!vehicleServices.length) {
-      return res.status(404).json({ error: "Vehicle service details not found" });
+      return res
+        .status(404)
+        .json({ error: "Vehicle service details not found" });
     }
-    res.json(vehicleServices); 
+    res.json(vehicleServices);
   } catch (error) {
-    console.error('Error fetching vehicle service details:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error fetching vehicle service details:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
 //list all est invoice for approval reject
 dealersCltr.priliminaryEsApprovalRejectByUser = async (req, res) => {
-  const { userId } = req.params;  // Extract vehicle number from request params
+  const { userId } = req.params; // Extract vehicle number from request params
 
   try {
     const vehicleServices = await VehicleService.find({ userId });
     if (!vehicleServices.length) {
-      return res.status(404).json({ error: "Vehicle service details not found" });
+      return res
+        .status(404)
+        .json({ error: "Vehicle service details not found" });
     }
-    res.json(vehicleServices); 
+    res.json(vehicleServices);
   } catch (error) {
-    console.error('Error fetching vehicle service details:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error fetching vehicle service details:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-//accept or reject after customer action  updatee    working properly 
+//accept or reject after customer action  updatee    working properly
 dealersCltr.EstApprovalRejectByUser = async (req, res) => {
   const estimationId = req.params.estimationId; // Corrected to match the route parameter
   const updatedData = req.body;
@@ -609,8 +618,8 @@ dealersCltr.EstApprovalRejectByUser = async (req, res) => {
   try {
     // Validate the estimation ID
     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
-      console.log('Invalid estimation ID:', estimationId);
-      return res.status(400).json({ error: 'Invalid estimation ID' });
+      console.log("Invalid estimation ID:", estimationId);
+      return res.status(400).json({ error: "Invalid estimation ID" });
     }
 
     // Find the estimation by ID and update it
@@ -622,17 +631,18 @@ dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 
     // Check if the estimation exists
     if (!estimation) {
-      return res.status(404).json({ error: 'Estimation not found' });
+      return res.status(404).json({ error: "Estimation not found" });
     }
 
     // Success response
-    res.status(200).json({ message: 'Estimation updated successfully', estimation });
+    res
+      .status(200)
+      .json({ message: "Estimation updated successfully", estimation });
   } catch (err) {
-    console.error('Error updating estimation:', err);
-    res.status(500).json({ error: 'Server error while updating estimation' });
+    console.error("Error updating estimation:", err);
+    res.status(500).json({ error: "Server error while updating estimation" });
   }
 };
-
 
 //invoice gen
 dealersCltr.getEstimationById = async (req, res) => {
@@ -641,8 +651,8 @@ dealersCltr.getEstimationById = async (req, res) => {
   try {
     // Validate the estimation ID
     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
-      console.log('Invalid estimation ID:', estimationId);
-      return res.status(400).json({ error: 'Invalid estimation ID' });
+      console.log("Invalid estimation ID:", estimationId);
+      return res.status(400).json({ error: "Invalid estimation ID" });
     }
 
     // Find the estimation by ID
@@ -650,23 +660,23 @@ dealersCltr.getEstimationById = async (req, res) => {
 
     // Check if the estimation exists
     if (!estimation) {
-      return res.status(404).json({ error: 'Estimation not found' });
+      return res.status(404).json({ error: "Estimation not found" });
     }
 
     // Success response
-    res.status(200).json({ message: 'Estimation retrieved successfully', estimation });
+    res
+      .status(200)
+      .json({ message: "Estimation retrieved successfully", estimation });
   } catch (err) {
-    console.error('Error retrieving estimation:', err);
-    res.status(500).json({ error: 'Server error while retrieving estimation' });
+    console.error("Error retrieving estimation:", err);
+    res.status(500).json({ error: "Server error while retrieving estimation" });
   }
 };
-
-
 
 // dealersCltr.EstApprovalRejectByUser = async (req, res) => {
 //   try {
 //     const { estimationId } = req.params;
-    
+
 //     // Validate ObjectId
 //     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
 //       console.log("estid", estimationId);
@@ -679,18 +689,18 @@ dealersCltr.getEstimationById = async (req, res) => {
 //     // console.log("619",newItem)
 
 //     // Add new items to the list of items (supporting multiple items)
-    // if (newItem && Array.isArray(newItem)) {
-    //   updateData.$push = {
-    //     items: { $each: newItem }
-    //   };
-    // } else if (newItem) {
-    //   updateData.$push = {
-    //     items: {
-    //       estimationId: new mongoose.Types.ObjectId(),
-    //       ...newItem
-    //     }
-    //   };
-    // }
+// if (newItem && Array.isArray(newItem)) {
+//   updateData.$push = {
+//     items: { $each: newItem }
+//   };
+// } else if (newItem) {
+//   updateData.$push = {
+//     items: {
+//       estimationId: new mongoose.Types.ObjectId(),
+//       ...newItem
+//     }
+//   };
+// }
 
 //     // Add new estimation images
 //     if (newVehicleServiceEstimationImages) {
@@ -739,89 +749,301 @@ dealersCltr.getEstimationById = async (req, res) => {
 //   }
 // }
 
+//neww
+// dealersCltr.EstDismantelingProcess = async (req, res) => {
+
+//   try {
+//     const { estimationId } = req.params;
+//     const files = req.files;
+//     const uploadedVehicleServiceEstimationImages = [];
+//     const uploadedCapturedImages = [];
+//     const items =  req.body.items
+//     console.log("estID ",estimationId )
+//   console.log("751",items)
+
+//     // Upload files concurrently to Cloudinary
+//     const vehicleServiceEstimationImagesUploads = files.vehicleServiceEstimationImages.map(async (file) => {
+//       const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
+//       uploadedVehicleServiceEstimationImages.push(uploadResult.url);
+//     });
+
+//     const capturedImagesUploads = files.capturedImages.map(async (file) => {
+//       const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+//       uploadedCapturedImages.push(uploadResult.url);
+//     });
+
+//     await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+
+//     // Validate ObjectId format
+//     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
+//       console.log("Invalid estimation ID:", estimationId);
+//       return res.status(400).send('Invalid ID format.');
+//     }
+
+//     const { newItem, newVehicleServiceEstimationImages, newCapturedImages } = req.body;
+//     const updateData = {};
+
+//     // Add new items to the list
+//     if (newItem && Array.isArray(newItem)) {
+//       updateData.$push = {
+//         items: { $each: newItem }
+//       };
+//     } else if (newItem) {
+//       updateData.$push = {
+//         items: {
+//           estimationId: new mongoose.Types.ObjectId(),
+//           ...newItem
+//         }
+//       };
+//     }
+
+//     // Add new estimation and captured images
+//     if (newVehicleServiceEstimationImages || uploadedVehicleServiceEstimationImages.length) {
+//       updateData.$push = updateData.$push || {};
+//       updateData.$push.vehicleServiceEstimationImages = { $each: newVehicleServiceEstimationImages || uploadedVehicleServiceEstimationImages };
+//     }
+//     if (newCapturedImages || uploadedCapturedImages.length) {
+//       updateData.$push = updateData.$push || {};
+//       updateData.$push.capturedImages = { $each: newCapturedImages || uploadedCapturedImages };
+//     }
+
+//     // Update the document in MongoDB
+//     const updatedService = await Estimation.findByIdAndUpdate(estimationId,
+//       updateData,
+//       //  req.body,
+//       { new: true, runValidators: true });
+
+//     if (!updatedService) {
+//       return res.status(404).send('Service entry not found.');
+//     }
+
+//     // Calculate totalAmount based on items
+//     let totalAmount = updatedService.items.reduce((sum, item) => sum + item.mrp * item.quantity, 0);
+//     updatedService.totalAmount = totalAmount;
+
+//     await updatedService.save();
+
+//     console.log(updatedService)
+//     res.status(200).json({ message: 'Service updated successfully', updatedService });
+
+//   } catch (error) {
+//     console.error('Error updating service:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+//new semi -end
+
+// dealersCltr.EstDismantelingProcess = async (req, res) => {
+//   try {
+//     const { estimationId } = req.params;
+//     const files = req.files || {}; // Safeguard for undefined req.files
+//     const items = req.body.items;
+
+//     console.log("Estimation ID:", estimationId);
+//     console.log("Items:", items);
+//     console.log("Uploaded files:", files);
+
+//     // Initialize arrays for uploaded image URLs
+//     const uploadedVehicleServiceEstimationImages = [];
+//     const uploadedCapturedImages = [];
+
+//     // Ensure files.vehicleServiceEstimationImages and files.capturedImages are arrays
+//     if (!files.vehicleServiceEstimationImages || !Array.isArray(files.vehicleServiceEstimationImages)) {
+//       files.vehicleServiceEstimationImages = [];
+//     }
+//     if (!files.capturedImages || !Array.isArray(files.capturedImages)) {
+//       files.capturedImages = [];
+//     }
+
+//     // Upload files concurrently to Cloudinary
+//     const vehicleServiceEstimationImagesUploads = files.vehicleServiceEstimationImages.map(async (file) => {
+//       const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
+//       uploadedVehicleServiceEstimationImages.push(uploadResult.url);
+//     });
+
+//     const capturedImagesUploads = files.capturedImages.map(async (file) => {
+//       const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+//       uploadedCapturedImages.push(uploadResult.url);
+//     });
+
+//     // Wait for all uploads to finish
+//     await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+
+//     // Validate ObjectId format
+//     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
+//       console.error("Invalid estimation ID:", estimationId);
+//       return res.status(400).send('Invalid ID format.');
+//     }
+
+//     // Prepare update data
+//     const { newItem, newVehicleServiceEstimationImages, newCapturedImages } = req.body;
+//     const updateData = {};
+
+//     // Add new items to the list
+//     if (newItem && Array.isArray(newItem)) {
+//       updateData.$push = {
+//         items: { $each: newItem },
+//       };
+//     } else if (newItem) {
+//       updateData.$push = {
+//         items: {
+//           estimationId: new mongoose.Types.ObjectId(),
+//           ...newItem,
+//         },
+//       };
+//     }
+
+//     // Add new estimation and captured images
+//     if (uploadedVehicleServiceEstimationImages.length || (newVehicleServiceEstimationImages && newVehicleServiceEstimationImages.length)) {
+//       updateData.$push = updateData.$push || {};
+//       updateData.$push.vehicleServiceEstimationImages = {
+//         $each: uploadedVehicleServiceEstimationImages.concat(newVehicleServiceEstimationImages || []),
+//       };
+//     }
+
+//     if (uploadedCapturedImages.length || (newCapturedImages && newCapturedImages.length)) {
+//       updateData.$push = updateData.$push || {};
+//       updateData.$push.capturedImages = {
+//         $each: uploadedCapturedImages.concat(newCapturedImages || []),
+//       };
+//     }
+
+//     // Update the document in MongoDB
+//     const updatedService = await Estimation.findByIdAndUpdate(
+//       estimationId,
+//       updateData,
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedService) {
+//       return res.status(404).send('Service entry not found.');
+//     }
+
+//     // Calculate totalAmount based on items
+//     let totalAmount = updatedService.items.reduce((sum, item) => sum + (item.mrp || 0) * (item.quantity || 0), 0);
+//     updatedService.totalAmount = totalAmount;
+
+//     // Save the updated document
+//     await updatedService.save();
+
+//     console.log("Updated Service:", updatedService);
+//     res.status(200).json({ message: 'Service updated successfully', updatedService });
+
+//   } catch (error) {
+//     console.error('Error updating service:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
 dealersCltr.EstDismantelingProcess = async (req, res) => {
-  
   try {
     const { estimationId } = req.params;
-    const files = req.files;
+    const files = req.files || {};
+    const items = req.body.items ? JSON.parse(req.body.items) : []; // Parse `items` if it's a stringified JSON array
+
+    console.log("Estimation ID:", estimationId);
+    console.log("Items (parsed):", items);
+    console.log("Uploaded files:", files);
+
     const uploadedVehicleServiceEstimationImages = [];
     const uploadedCapturedImages = [];
-    const items =  req.body.items
-    console.log("estID ",estimationId )
-  console.log("722",items)
 
-    // Upload files concurrently to Cloudinary
-    const vehicleServiceEstimationImagesUploads = files.vehicleServiceEstimationImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
-      uploadedVehicleServiceEstimationImages.push(uploadResult.url);
-    });
+    if (
+      !files.vehicleServiceEstimationImages ||
+      !Array.isArray(files.vehicleServiceEstimationImages)
+    ) {
+      files.vehicleServiceEstimationImages = [];
+    }
+    if (!files.capturedImages || !Array.isArray(files.capturedImages)) {
+      files.capturedImages = [];
+    }
+
+    const vehicleServiceEstimationImagesUploads =
+      files.vehicleServiceEstimationImages.map(async (file) => {
+        const uploadResult = await safeUploadFileToCloudinary(
+          file,
+          CLOUDINARY_FOLDERS.vehicleServiceEstimationImages
+        );
+        uploadedVehicleServiceEstimationImages.push(uploadResult.url);
+      });
 
     const capturedImagesUploads = files.capturedImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.capturedImages
+      );
       uploadedCapturedImages.push(uploadResult.url);
     });
 
-    await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+    await Promise.all([
+      ...vehicleServiceEstimationImagesUploads,
+      ...capturedImagesUploads,
+    ]);
 
-    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(estimationId)) {
-      console.log("Invalid estimation ID:", estimationId);
-      return res.status(400).send('Invalid ID format.');
+      console.error("Invalid estimation ID:", estimationId);
+      return res.status(400).send("Invalid ID format.");
     }
 
-    const { newItem, newVehicleServiceEstimationImages, newCapturedImages } = req.body;
-    const updateData = {};
-    
+    // Find the existing estimation document
+    const estimation = await Estimation.findById(estimationId);
+    if (!estimation) {
+      return res.status(404).send("Estimation not found.");
+    }
 
-    // Add new items to the list
-    if (newItem && Array.isArray(newItem)) {
-      updateData.$push = {
-        items: { $each: newItem }
-      };
-    } else if (newItem) {
-      updateData.$push = {
-        items: {
-          estimationId: new mongoose.Types.ObjectId(),
-          ...newItem
+    // Process and merge items
+    if (items && Array.isArray(items)) {
+      items.forEach((item) => {
+        const existingItemIndex = estimation.items.findIndex(
+          (existingItem) => existingItem.itemNumber === item.itemNumber
+        );
+
+        if (existingItemIndex !== -1) {
+          // Update existing item
+          estimation.items[existingItemIndex] = {
+            ...estimation.items[existingItemIndex],
+            ...item,
+          };
+        } else {
+          // Add new item
+          estimation.items.push({
+            estimationId: new mongoose.Types.ObjectId(),
+            ...item,
+          });
         }
-      };
+      });
     }
 
-    // Add new estimation and captured images
-    if (newVehicleServiceEstimationImages || uploadedVehicleServiceEstimationImages.length) {
-      updateData.$push = updateData.$push || {};
-      updateData.$push.vehicleServiceEstimationImages = { $each: newVehicleServiceEstimationImages || uploadedVehicleServiceEstimationImages };
+    // Append new images
+    if (uploadedVehicleServiceEstimationImages.length) {
+      estimation.vehicleServiceEstimationImages.push(
+        ...uploadedVehicleServiceEstimationImages
+      );
     }
-    if (newCapturedImages || uploadedCapturedImages.length) {
-      updateData.$push = updateData.$push || {};
-      updateData.$push.capturedImages = { $each: newCapturedImages || uploadedCapturedImages };
-    }
-
-    // Update the document in MongoDB
-    const updatedService = await Estimation.findByIdAndUpdate(estimationId, 
-      updateData,
-      //  req.body,
-      { new: true, runValidators: true });
-
-    if (!updatedService) {
-      return res.status(404).send('Service entry not found.');
+    if (uploadedCapturedImages.length) {
+      estimation.capturedImages.push(...uploadedCapturedImages);
     }
 
-    // Calculate totalAmount based on items
-    let totalAmount = updatedService.items.reduce((sum, item) => sum + item.mrp * item.quantity, 0);
-    updatedService.totalAmount = totalAmount;
+    // Recalculate totalAmount
+    estimation.totalAmount = estimation.items.reduce(
+      (sum, item) => sum + (item.mrp || 0) * (item.quantity || 0),
+      0
+    );
 
-    await updatedService.save();
+    // Save the updated estimation
+    await estimation.save();
 
-    console.log(updatedService)
-    res.status(200).json({ message: 'Service updated successfully', updatedService });
-
+    console.log("Updated Estimation:", estimation);
+    res
+      .status(200)
+      .json({ message: "Estimation updated successfully", estimation });
   } catch (error) {
-    console.error('Error updating service:', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error updating estimation:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
+//new  -end
 
 //cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
@@ -923,35 +1145,26 @@ dealersCltr.EstDismantelingProcess = async (req, res) => {
 //   }
 // };
 
-
-
-
-
-
 // dealersCltr.AllPartnerList = async (req, res) => {
 //   try {
 //     const { state, city } = req.query; // or req.body, depending on how you send the data
-    
+
 //     // Filter dealers based on the state and city
 //     const allPartnerList = await AllPartnerList.find({
 //       state: state,
 //       city: city
 //     });
-    
+
 //     if (allPartnerList.length === 0) {
 //       return res.status(404).json({ error: "No dealer found near your city" });
 //     }
-    
+
 //     res.json(allPartnerList);
 //   } catch (err) {
 //     console.error("Error in fetching Dealer details:", err);
 //     res.status(500).json({ error: 'Something went wrong while fetching the Partner details' });
 //   }
 // };
-
-
-
-
 
 // dealersCltr.AllPartnerList = async (req, res) => {
 //   try {
@@ -966,6 +1179,4 @@ dealersCltr.EstDismantelingProcess = async (req, res) => {
 // }
 // }
 
-
-
-module.exports = dealersCltr
+module.exports = dealersCltr;

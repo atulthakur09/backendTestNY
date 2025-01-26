@@ -1,4 +1,4 @@
-const { config: configDotenv } = require('dotenv');
+const { config: configDotenv } = require("dotenv");
 
 // Load environment variables from .env file
 configDotenv();
@@ -16,28 +16,15 @@ const config = Object.freeze(_config);
 // Export the frozen configuration object
 module.exports = { config };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // const { configDotenv } = require('dotenv');
 // conf();
 
 // const _config = {
-  
+
 //   cloudinaryCloud: process.env.CLOUDINARY_CLOUD_NAME,
 //   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
 //   cloudinarySecret: process.env.CLOUDINARY_API_SECRET,
-  
+
 // };
 
 // export const config = Object.freeze(_config);

@@ -3,14 +3,15 @@ const fs = require("fs");
 const { validationResult } = require("express-validator");
 const cloudinary = require("../../config/cloudinary");
 const Vehicle = require("../models/vehicle-register-model");
-const vehicleService = require("../models/vehicle-service-register-model");
+const VehicleService = require("../models/vehicle-service-register-model");
 const AppointmentBooking = require("../models/appointment-booking-model");
-const {vehicleNumber} = require("../validations/vehicle-register-validations");
+const {
+  vehicleNumber,
+} = require("../validations/vehicle-register-validations");
 const { timeSlot } = require("../validations/appointment-booking-validation");
 const VehicleRegister = require("../models/vehicle-register-model");
 const VehicleServiceRegister = require("../models/vehicle-service-register-model");
 const VehicleServicePrices = require("../models/vehicle-service-prices-model");
-
 
 const B2bFleetInfo = require("../models/b2b-fleet-info-model");
 
@@ -75,7 +76,7 @@ const safeUploadFileToCloudinary = async (file, folderName) => {
 //       safeUploadFileToCloudinary(files.vehicleServiceEstimationImages[0], CLOUDINARY_FOLDERS.vehicleServiceEstimationImages),
 //       safeUploadFileToCloudinary(files.capturedImages[0], CLOUDINARY_FOLDERS.capturedImages)
 //     ]);
-    
+
 //     const [vehicleServiceEstimationImagesResult, capturedImagesResult] = uploadResults;
 //     // Log uploaded URLs and local paths for debugging
 //     console.log("Uploaded URLs and Local Paths:", {
@@ -107,7 +108,6 @@ const safeUploadFileToCloudinary = async (file, folderName) => {
 // };
 
 //working but only one image uploaded
-
 
 // vehiclesCltr.vehicleServiceRegister = async (req, res) => {
 //   try {
@@ -272,16 +272,22 @@ vehiclesCltr.vehicleServiceRegister = async (req, res) => {
       try {
         data.items = JSON.parse(data.items);
       } catch (err) {
-        return res.status(400).json({ success: false, error: "Invalid format for items field" });
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid format for items field" });
       }
     }
 
     // Extract files or initialize empty arrays
     const files = req.files || {};
-    const vehicleServiceEstimationImages = files.vehicleServiceEstimationImages || [];
+    const vehicleServiceEstimationImages =
+      files.vehicleServiceEstimationImages || [];
     const capturedImages = files.capturedImages || [];
 
-    if (vehicleServiceEstimationImages.length === 0 && capturedImages.length === 0) {
+    if (
+      vehicleServiceEstimationImages.length === 0 &&
+      capturedImages.length === 0
+    ) {
       console.log("No files were uploaded, proceeding without files.");
     }
 
@@ -290,19 +296,29 @@ vehiclesCltr.vehicleServiceRegister = async (req, res) => {
     const uploadedCapturedImages = [];
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
-    const vehicleServiceEstimationImagesUploads = vehicleServiceEstimationImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
-      uploadedVehicleServiceEstimationImages.push(uploadResult.url);
-    });
+    const vehicleServiceEstimationImagesUploads =
+      vehicleServiceEstimationImages.map(async (file) => {
+        const uploadResult = await safeUploadFileToCloudinary(
+          file,
+          CLOUDINARY_FOLDERS.vehicleServiceEstimationImages
+        );
+        uploadedVehicleServiceEstimationImages.push(uploadResult.url);
+      });
 
     // Upload all capturedImages files concurrently to Cloudinary
     const capturedImagesUploads = capturedImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.capturedImages
+      );
       uploadedCapturedImages.push(uploadResult.url);
     });
 
     // Wait for all uploads to finish
-    await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+    await Promise.all([
+      ...vehicleServiceEstimationImagesUploads,
+      ...capturedImagesUploads,
+    ]);
 
     // Log uploaded URLs for debugging
     console.log("Uploaded URLs:", {
@@ -337,8 +353,6 @@ vehiclesCltr.vehicleServiceRegister = async (req, res) => {
   }
 };
 
-
-
 //gettttttttttttt
 vehiclesCltr.vehicleServiceUpdate = async (req, res) => {
   try {
@@ -357,22 +371,30 @@ vehiclesCltr.vehicleServiceUpdate = async (req, res) => {
       try {
         data.items = JSON.parse(data.items);
       } catch (err) {
-        return res.status(400).json({ success: false, error: "Invalid format for items field" });
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid format for items field" });
       }
     }
 
     // Find the record to update
     const vehicleService = await VehicleServiceRegister.findById(id);
     if (!vehicleService) {
-      return res.status(404).json({ success: false, error: "Record not found" });
+      return res
+        .status(404)
+        .json({ success: false, error: "Record not found" });
     }
 
     // Extract files or initialize empty arrays
     const files = req.files || {};
-    const vehicleServiceEstimationImages = files.vehicleServiceEstimationImages || [];
+    const vehicleServiceEstimationImages =
+      files.vehicleServiceEstimationImages || [];
     const capturedImages = files.capturedImages || [];
 
-    if (vehicleServiceEstimationImages.length === 0 && capturedImages.length === 0) {
+    if (
+      vehicleServiceEstimationImages.length === 0 &&
+      capturedImages.length === 0
+    ) {
       console.log("No files were uploaded, proceeding without files.");
     }
 
@@ -381,19 +403,29 @@ vehiclesCltr.vehicleServiceUpdate = async (req, res) => {
     const uploadedCapturedImages = [];
 
     // Upload all vehicleServiceEstimationImages files concurrently to Cloudinary
-    const vehicleServiceEstimationImagesUploads = vehicleServiceEstimationImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.vehicleServiceEstimationImages);
-      uploadedVehicleServiceEstimationImages.push(uploadResult.url);
-    });
+    const vehicleServiceEstimationImagesUploads =
+      vehicleServiceEstimationImages.map(async (file) => {
+        const uploadResult = await safeUploadFileToCloudinary(
+          file,
+          CLOUDINARY_FOLDERS.vehicleServiceEstimationImages
+        );
+        uploadedVehicleServiceEstimationImages.push(uploadResult.url);
+      });
 
     // Upload all capturedImages files concurrently to Cloudinary
     const capturedImagesUploads = capturedImages.map(async (file) => {
-      const uploadResult = await safeUploadFileToCloudinary(file, CLOUDINARY_FOLDERS.capturedImages);
+      const uploadResult = await safeUploadFileToCloudinary(
+        file,
+        CLOUDINARY_FOLDERS.capturedImages
+      );
       uploadedCapturedImages.push(uploadResult.url);
     });
 
     // Wait for all uploads to finish
-    await Promise.all([...vehicleServiceEstimationImagesUploads, ...capturedImagesUploads]);
+    await Promise.all([
+      ...vehicleServiceEstimationImagesUploads,
+      ...capturedImagesUploads,
+    ]);
 
     // Log uploaded URLs for debugging
     console.log("Uploaded URLs:", {
@@ -402,7 +434,9 @@ vehiclesCltr.vehicleServiceUpdate = async (req, res) => {
     });
 
     // Update the record
-    vehicleService.vehicleServiceEstimationImages.push(...uploadedVehicleServiceEstimationImages); // Append new URLs
+    vehicleService.vehicleServiceEstimationImages.push(
+      ...uploadedVehicleServiceEstimationImages
+    ); // Append new URLs
     vehicleService.capturedImages.push(...uploadedCapturedImages); // Append new URLs
     Object.assign(vehicleService, data); // Update other fields
 
@@ -426,8 +460,51 @@ vehiclesCltr.vehicleServiceUpdate = async (req, res) => {
   }
 };
 
+//delete item
+vehiclesCltr.vehicleServiceItemDelete = async (req, res) => {
+  try {
+    const { id, itemId } = req.params; // Get the record ID and item ID from request parameters
 
+    // Find the vehicle service record by ID
+    const vehicleService = await VehicleServiceRegister.findById(id);
+    if (!vehicleService) {
+      return res
+        .status(404)
+        .json({ success: false, error: "Record not found" });
+    }
 
+    // Check if the item exists in the items array
+    const itemIndex = vehicleService.items.findIndex(
+      (item) => item._id.toString() === itemId
+    );
+    if (itemIndex === -1) {
+      return res.status(404).json({ success: false, error: "Item not found" });
+    }
+
+    // Remove the item from the items array
+    vehicleService.items.splice(itemIndex, 1);
+
+    // Save the updated record
+    await vehicleService.save();
+
+    // Return the updated record
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Item deleted successfully",
+        data: vehicleService,
+      });
+  } catch (err) {
+    console.error("Error deleting item:", err);
+    res
+      .status(500)
+      .json({
+        success: false,
+        error: "Something went wrong while deleting the item",
+      });
+  }
+};
 
 // Register a new vehicle
 vehiclesCltr.register = async (req, res) => {
@@ -710,10 +787,6 @@ vehiclesCltr.b2bGSTINFleetInfo = async (req, res) => {
   }
 };
 
-
-
-
-
 // Vehicle service List of vehicle
 vehiclesCltr.vehicleServiceList = async (req, res) => {
   const vehicleNumber = req.params.vehicleNumber;
@@ -907,7 +980,7 @@ vehiclesCltr.myAppointmentsList = async (req, res) => {
 
 module.exports = vehiclesCltr;
 
-// const Vehicle = require('../models/vehicle-register-model'); 
+// const Vehicle = require('../models/vehicle-register-model');
 // const vehicleService = require("../models/vehicle-service-register-model")
 // const AppointmentBooking = require('../models/appointment-booking-model')
 // const { validationResult } = require('express-validator');
@@ -923,7 +996,6 @@ module.exports = vehiclesCltr;
 // const B2bFleetInfo = require('../models/b2b-fleet-info-model')
 
 // const vehiclesCltr = {};
-
 
 // // Register a new vehicle
 // vehiclesCltr.register = async (req, res) => {
@@ -968,7 +1040,7 @@ module.exports = vehiclesCltr;
 //     }
 // };
 
-// //  Fetch all vehicles for admin 
+// //  Fetch all vehicles for admin
 
 // vehiclesCltr.getVehicleByNumber = async (req, res) => {
 //     const vehicleNumber = req.params.vehicleNumber;
@@ -1031,7 +1103,6 @@ module.exports = vehiclesCltr;
 //             serviceType,
 //             pickupAndDrop,
 //             pickupAndDropAddress,
-            
 
 //         });
 
@@ -1077,7 +1148,6 @@ module.exports = vehiclesCltr;
 //             pickupAddress,
 //             dropAddress,
 //             billingAddress,
-            
 
 //         });
 
@@ -1090,7 +1160,6 @@ module.exports = vehiclesCltr;
 //         return res.status(500).json({ error: 'Internal server error' });
 //     }
 // };
-
 
 // // add gst, billing address , name of office for b2b customer
 
@@ -1166,31 +1235,27 @@ module.exports = vehiclesCltr;
 // //     }
 // // };
 
-
-
 // // Utility function to upload files to Cloudinary
 // const uploadFileToCloudinary = async (file, folderName) => {
 //     console.log("file name here 263",file)
 //     const mimeType = file.mimetype.split("/").at(-1); // Get file extension
 //     const fileName = file.filename; // Get the filename generated by multer
 //     const filePath = path.resolve(__dirname, "../../uploads", fileName); // Get full path
-  
+
 //     // Log the local file path
 //     console.log(`Local file path for ${fileName}: ${filePath}`);
-  
+
 //     const uploadResult = await cloudinary.uploader.upload(filePath, {
 //       filename_override: fileName,
 //       folder: folderName,
 //       format: mimeType,
 //     });
-  
+
 //     return {
 //       url: uploadResult.secure_url, // Cloudinary URL
 //       localPath: filePath // Local file path
 //     };
 //   };
-
-
 
 // // Vehicle service add
 // vehiclesCltr.vehicleServiceRegister = async (req, res) => {
@@ -1251,37 +1316,32 @@ module.exports = vehiclesCltr;
 //   }
 // };
 
-
 // // Vehicle service List of vehicle
 // vehiclesCltr.vehicleServiceList = async (req, res) => {
 //     const vehicleNumber = req.params.vehicleNumber;
-    
+
 //     try {
-        
+
 //         const vehicleServices = await VehicleService.find({ vehicleNumber: vehicleNumber });
 
 //         if (vehicleServices.length === 0) {
 //             return res.status(404).json({ error: "Vehicle service details not found" });
 //         }
 
-//         res.json(vehicleServices); 
+//         res.json(vehicleServices);
 //     } catch (error) {
 //         console.error('Error fetching vehicle service details:', error);
 //         res.status(500).json({ error: 'Server error' });
 //     }
 // };
 
-
-
-
-
 // // Update vehicle details                            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 // vehiclesCltr.updateVehicle = async (req, res) => {
-//     const vehicleId = req.params.vehicleId;  
+//     const vehicleId = req.params.vehicleId;
 //     const body = req.body;
 
 //     try {
-        
+
 //         const vehicle = await Vehicle.findOneAndUpdate({ _id: id }, body, { new: true, runValidators: true });
 //         if (!vehicle) {
 //             return res.status(404).json({ error: 'Vehicle not found' });
@@ -1292,13 +1352,6 @@ module.exports = vehiclesCltr;
 //         res.status(500).json({ error: 'Something went wrong while updating the vehicle' });
 //     }
 // };
-
-
-
-
-
-
-
 
 // // Delete a vehicle                                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 // vehiclesCltr.deleteVehicle = async (req, res) => {
@@ -1316,24 +1369,17 @@ module.exports = vehiclesCltr;
 //     }
 // };
 
-
-
-
-
-
-
-
-// //Manual save all prices 
+// //Manual save all prices
 // //vehicleServicesPricesList
 // vehiclesCltr.vehicleServicesPrices = async  (req, res) => {
 //     try {
 //         const { brand, model, periodicServices, acServiceRepair, batteries, tyresWheelCare, dentingPainting, detailingService, carSpaCleaningService, carInspection, windshieldsLights, suspensionFitments, clutchBodyParts, insurance } = req.body;
-    
+
 //         // Validate input
 //         if (!brand || !model || !Array.isArray(periodicServices) || !Array.isArray(acServiceRepair) || !Array.isArray(batteries) || !Array.isArray(tyresWheelCare) || !Array.isArray(dentingPainting) || !Array.isArray(detailingService) || !Array.isArray(carSpaCleaningService) || !Array.isArray(carInspection) || !Array.isArray(windshieldsLights) || !Array.isArray(suspensionFitments) || !Array.isArray(clutchBodyParts) || !Array.isArray(insurance)) {
 //           return res.status(400).json({ error: "All fields are required and must be arrays" });
 //         }
-    
+
 //         // Create a new vehicle service record
 //         const newService = new VehicleServicePrices({
 //           brand,
@@ -1351,10 +1397,10 @@ module.exports = vehiclesCltr;
 //           clutchBodyParts,
 //           insurance
 //         });
-    
+
 //         // Save to database
 //         await newService.save();
-    
+
 //         res.status(201).json({ message: 'Service details saved successfully', newService });
 //       } catch (error) {
 //         console.error(error);
@@ -1362,25 +1408,16 @@ module.exports = vehiclesCltr;
 //       }
 //     };
 
-
-
-
-
-
-
-
-
-
 // //user Appointment List
 // vehiclesCltr.myAppointmentsList = async (req, res) => {
 //     const userId = req.params.userId;
 //     try {
 //         const appointments = await AppointmentBooking.find({ userId: userId });
-        
+
 //         if (appointments.length === 0) {
 //             return res.status(404).json({ error: 'No appointment found for this user' });
 //         }
-        
+
 //         res.json(appointments);
 //     } catch (err) {
 //         console.error("Error in fetching appointments:", err);
@@ -1391,7 +1428,7 @@ module.exports = vehiclesCltr;
 // // // Check if the vehicle is already registered
 // // vehiclesCltr.checkVehicleNumber = async (req, res) => {
 // //     const { vehicleNumber } = req.params; // Get vehicleNumber from request params
-  
+
 // //     try {
 // //         // Check if the vehicle number is already registered
 // //         const existingVehicle = await Vehicle.findOne({ vehicleNumber: vehicleNumber });
@@ -1409,7 +1446,7 @@ module.exports = vehiclesCltr;
 // // // Check if the mobile number is already registered
 // // vehiclesCltr.checkMobile = async (req, res) => {
 // //     const { mobile } = req.params; // Get mobile from request params
-  
+
 // //     try {
 // //         const existingMobile = await Vehicle.findOne({ contact: mobile }); // Use mobile from req.params
 // //         if (existingMobile) {
@@ -1422,8 +1459,5 @@ module.exports = vehiclesCltr;
 // //         return res.status(500).json({ error: 'Internal Server Error' });
 // //     }
 // // };
-
-
-
 
 // module.exports = vehiclesCltr;

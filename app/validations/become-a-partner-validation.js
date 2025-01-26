@@ -1,51 +1,65 @@
-const { body } = require('express-validator');
+const { body } = require("express-validator");
 
 const validateBecomeAPartner = [
-  body('workshopName')
-    .notEmpty().withMessage('Workshop name is required.')
-    .isString().withMessage('Workshop name must be a string.')
-    .trim(),
-  
-  body('ownerName')
-    .notEmpty().withMessage('Owner name is required.')
-    .isString().withMessage('Owner name must be a string.')
+  body("workshopName")
+    .notEmpty()
+    .withMessage("Workshop name is required.")
+    .isString()
+    .withMessage("Workshop name must be a string.")
     .trim(),
 
-    body('state')
-    .notEmpty().withMessage('State is required.')
-    .isString().withMessage('State must be a string.')
-    .trim(),
-  
-
-  body('city')
-    .notEmpty().withMessage('City is required.')
-    .isString().withMessage('City must be a string.')
-    .trim(),
-  
-  body('address')
-    .notEmpty().withMessage('Address is required.')
-    .isString().withMessage('Address must be a string.')
-    .trim(),
-  
-    body('pinCode')
-    .notEmpty().withMessage('Pin code number is required.')
-    .isMobilePhone().withMessage('Invalid pin code number.')
+  body("ownerName")
+    .notEmpty()
+    .withMessage("Owner name is required.")
+    .isString()
+    .withMessage("Owner name must be a string.")
     .trim(),
 
-  body('mobileNumber')
-    .notEmpty().withMessage('Mobile number is required.')
-    .isMobilePhone().withMessage('Invalid mobile number.')
+  body("state")
+    .notEmpty()
+    .withMessage("State is required.")
+    .isString()
+    .withMessage("State must be a string.")
     .trim(),
-  
-  body('liveLocation')
-    .notEmpty().withMessage('Live location is required.')
-    .isJSON().withMessage('Live location must be in JSON format.'),
+
+  body("city")
+    .notEmpty()
+    .withMessage("City is required.")
+    .isString()
+    .withMessage("City must be a string.")
+    .trim(),
+
+  body("address")
+    .notEmpty()
+    .withMessage("Address is required.")
+    .isString()
+    .withMessage("Address must be a string.")
+    .trim(),
+
+  body("pinCode")
+    .notEmpty()
+    .withMessage("Pin code number is required.")
+    .isMobilePhone()
+    .withMessage("Invalid pin code number.")
+    .trim(),
+
+  body("mobileNumber")
+    .notEmpty()
+    .withMessage("Mobile number is required.")
+    .isMobilePhone()
+    .withMessage("Invalid mobile number.")
+    .trim(),
+
+  body("liveLocation")
+    .notEmpty()
+    .withMessage("Live location is required.")
+    .isJSON()
+    .withMessage("Live location must be in JSON format."),
 
   // Validate the file uploads (shopImages, panCard, aadhaarCard) can be handled directly in multer middleware, if needed.
 ];
 
 module.exports = { validateBecomeAPartner };
-
 
 // const { body, check } = require('express-validator');
 
