@@ -6,6 +6,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("node:path");
 const express = require("express");
+const crypto = require("crypto");
 const cors = require("cors");
 const configureDB = require("./config/db");
 const { checkSchema } = require("express-validator");
@@ -84,6 +85,14 @@ app.post(
   checkSchema(userLoginValidationSchema),
   usersCltr.login
 );
+
+
+
+//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+app.use(express.urlencoded({ extended: true })); 
+app.post("/order",usersCltr.payment);
+app.post("/status",usersCltr.status);
+//xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 //account information
 app.get("/users/account", authenticateUser, usersCltr.account);

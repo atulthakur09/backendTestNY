@@ -256,6 +256,10 @@ const vehicleServiceRegisterSchema = new Schema(
       default: "In Progress",
     },
 
+
+    // Payment
+    paymentStatus: {type: String, enum:["Paid", "Pending", "Transcation Failed", "Paid Via Cash", "Paid Via Online Payment"], default: "Pending",},
+
     // dealerId: {
     //     type: String,
     //     // required: true
@@ -363,7 +367,7 @@ const vehicleServiceRegisterSchema = new Schema(
       type: String,
       // required: [true, 'Owner name is required'],
       trim: true,
-      minlength: [3, "Owner name must be at least 3 characters"],
+      
     },
     receiverName: {
       type: String,
@@ -381,6 +385,7 @@ const vehicleServiceRegisterSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    
   },
   { timestamps: true }
 );
